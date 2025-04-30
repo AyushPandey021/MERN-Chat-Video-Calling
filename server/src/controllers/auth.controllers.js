@@ -1,3 +1,4 @@
+import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
@@ -38,11 +39,24 @@ export async function Signup(req, res) {
       profilePic: randomAvatar,
     });
 
-    // TODO: CREATE NEW USER IN STREAM
+    try {
+      await upsertStreamUser({
+        id: newUser._id.toString(),
+        name: newUser.fullName,
+        image: newUser.profilePic || "",
+      });
+      console.log(`Stream user created: ${newUser.fullName}`);
+    } catch (error) {
+      console.log("Error in creating user in stream", error);
+    }
 
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     res.cookie("jwt", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -60,10 +74,42 @@ export async function Signup(req, res) {
 
 // Login
 export async function Login(req, res) {
-  res.send("login");
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isPasswordCorrect = await user.matchPassword(password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("jwt", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(200).json({ message: "User logged in successfully" });
+  } catch (error) {
+    console.log("Error in login controller", error);
+    res.status(500).json({ message: "INTERNAL SERVER ERROR" });
+  }
 }
 
 // Logout
 export async function Logout(req, res) {
-  res.send("logout");
+  res.clearCookie("jwt");
+  res.status(200).json({ message: "User logged out successfully" });
 }
