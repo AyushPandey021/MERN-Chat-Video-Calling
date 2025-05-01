@@ -10,6 +10,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import SignUpPage from "./pages/SignUpPage";
 import { UseThemeStore } from "./store/useThemeStore";
+import Layout from "./components/Layout";
 
 export default function App() {
   const { theme } = UseThemeStore();
@@ -28,7 +29,9 @@ export default function App() {
           path="/"
           element={
             isAuthenticated && isOnboarded ? (
-              <HomePage />
+              <Layout showSidebar={true}>
+                <HomePage />
+              </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
@@ -57,16 +60,36 @@ export default function App() {
         <Route
           path={"/notifications"}
           element={
-            isAuthenticated ? <NotificationsPage /> : <Navigate to="/login" />
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <NotificationsPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
           }
         />
         <Route
-          path={"/call"}
-          element={isAuthenticated ? <CallPage /> : <Navigate to="/login" />}
+          path={"/call:id"}
+          element={
+            isAuthenticated && isOnboarded ? (
+              <CallPage />
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
         />
         <Route
-          path={"/chat"}
-          element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />}
+          path={"/chat:id"}
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={false}>
+                <ChatPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
         />
         <Route
           path={"/onboarding"}
