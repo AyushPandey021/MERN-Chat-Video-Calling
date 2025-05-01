@@ -2,7 +2,7 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { ShipWheelIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "react-router";
-import { SignUp } from "../lib/api";
+import { signup } from "../lib/api";
 
 const SignUpPage = () => {
   const [signUpData, setSignUpData] = useState({
@@ -18,7 +18,7 @@ const SignUpPage = () => {
     isPending,
     error,
   } = useMutation({
-    mutationFn: SignUp,
+    mutationFn: signup,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
   });
 
