@@ -15,7 +15,7 @@ export async function getRecommendedUsers(req, res) {
       ],
     });
 
-    res.status(200).json({ recommendedUsers });
+    res.status(200).json(recommendedUsers);
   } catch (error) {
     console.error("Error in getting recommended users:", error.message);
     res.status(500).json({ message: "INTERNAL SERVER ERROR" });
@@ -32,7 +32,7 @@ export async function getMyFriends(req, res) {
         "fullName profilePic nativeLanguage learningLanguage"
       );
 
-    res.status(200).json({ friends: user.friends });
+    res.status(200).json(user.friends);
   } catch (error) {
     console.error("Error in getting my friends:", error.message);
     res.status(500).json({ message: "INTERNAL SERVER ERROR" });
@@ -49,7 +49,7 @@ export async function sendFriendRequest(req, res) {
         .json({ message: "You cannot send a friend request to yourself" });
     }
 
-    const recipient = User.findById(recipientId);
+    const recipient = await User.findById(recipientId);
     if (!recipient) {
       return res.status(404).json({ message: "Recipient not found" });
     }
