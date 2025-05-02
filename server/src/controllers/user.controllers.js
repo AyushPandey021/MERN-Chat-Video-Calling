@@ -94,7 +94,7 @@ export async function acceptFriendRequest(req, res) {
       return res.status(404).json({ message: "Friend request not found" });
     }
 
-    if (friendRequest.recipient.toString() !== req.user._id) {
+    if (friendRequest.recipient.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message:
           "Unauthorized - You are not authorized to accept this friend request",
@@ -112,6 +112,8 @@ export async function acceptFriendRequest(req, res) {
       $addToSet: { friends: friendRequest.sender },
     });
 
+    console.log("Request recipient:", friendRequest.recipient.toString());
+    console.log("Current user:", req.user._id.toString());
     res.status(200).json({ message: "Friend request accepted successfully" });
   } catch (error) {
     console.error("Error in accepting friend request:", error.message);
