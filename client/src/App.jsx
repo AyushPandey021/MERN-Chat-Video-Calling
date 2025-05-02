@@ -70,7 +70,7 @@ export default function App() {
           }
         />
         <Route
-          path={"/call:id"}
+          path={"/call/:id"}
           element={
             isAuthenticated && isOnboarded ? (
               <CallPage />
@@ -80,7 +80,7 @@ export default function App() {
           }
         />
         <Route
-          path={"/chat:id"}
+          path={"/chat/:id"}
           element={
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={false}>
