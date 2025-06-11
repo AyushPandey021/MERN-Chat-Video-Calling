@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://fullstack-chat-video-calling-app-rg.vercel.app",
+    origin: "https://fullstack-chat-video-calling-app-rg.vercel.app/login",
     credentials: true,
   })
 );
