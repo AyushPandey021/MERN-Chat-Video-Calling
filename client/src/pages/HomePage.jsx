@@ -18,6 +18,7 @@ import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
 import { capitialize } from "../lib/utils";
+import Footer from "../components/Footer";
 
 const HomePage = () => {
   const queryClient = useQueryClient();
@@ -186,6 +187,7 @@ const HomePage = () => {
       </div>
     </div>
   );
+  
 };
 
 export default HomePage;

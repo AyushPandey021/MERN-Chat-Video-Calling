@@ -57,6 +57,8 @@ export async function Signup(req, res) {
         expiresIn: "7d",
       }
     );
+    console.log(process.env.JWT_SECRET_KEY);
+    
 
     res.cookie("jwt", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
